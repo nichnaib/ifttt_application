@@ -16,8 +16,4 @@ node server.js
 ```
 Connect the API keys with the server. For doing so create a file for each API keys and import it in the server.
 
-## Complete guide on my master thesis
 
-```
-git clone https://github.com/nichnaib/master_thesis.git
-```
