@@ -11,7 +11,7 @@ Web Application that emulates an IFTTT applet. This applet let you upload an ima
 4. Host a server to the web with [ngrok](https://ngrok.com/)
 5. Clone the repo and launch the server. 
 ```
-git clone 
+git clone https://github.com/nichnaib/ifttt_application.git 
 node server.js
 ```
 Connect the API keys with the server. For doing so create a file for each API keys and import it in the server.
