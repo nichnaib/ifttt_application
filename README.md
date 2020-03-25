@@ -1,6 +1,6 @@
 # Description
 
-Web Application that emulates an IFTTT applet. This applet let you upload an image on a Google Drive folder and tweets it only if it does not contains sensitive data
+Web Application that emulates an IFTTT applet. This applet let you upload an image on a Google Drive folder and tweets it only if it does not contains sensitive data.
 
 
 ## Usage
