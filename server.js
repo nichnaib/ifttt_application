@@ -1,51 +1,49 @@
-// ACTION SERVICE SOCIAL UPLOAD
-// init project
-
-const async = require("async")
+// Modules required
+const async = require("async");
+const middleware = require("./middleware");
+const helpers = require("./helpers");
 const express = require("express");
 const request = require("request");
-const Twit = require("twit");
+const twit = require("twit");
 const parse = require("querystring");
 const fs = require("fs");
-
 const vision = require("@google-cloud/vision");
-
 const bodyParser = require("body-parser");
 const path = require("path");
-
 const { google } = require("googleapis");
 
-const drive_config = require("./drive_config.json");
+// --------------------------------------------------------------
+// insert your keys in the matching folders (vision_config.json, drive_config.json, twitter_config.js, .env) and uncomment all
 
-const client = new vision.ImageAnnotatorClient({
-  keyFilename: "vision_config.json"
-});
 
-const scopes = ["https://www.googleapis.com/auth/drive"];
+// API VISION
+// const client = new vision.ImageAnnotatorClient({
+//   keyFilename: "vision_config.json"
+// });
 
-const auth = new google.auth.JWT(
-  drive_config.client_email,
-  null,
-  drive_config.private_key,
-  scopes
-);
+// API DRIVE
+// const drive_config = require("./drive_config.json");
+// const scopes = ["https://www.googleapis.com/auth/drive"];
+// const auth = new google.auth.JWT(
+//   drive_config.client_email,
+//   null,
+//   drive_config.private_key,
+//   scopes
+// );
+// const drive = google.drive({ version: "v3", auth });
 
-const drive = google.drive({ version: "v3", auth });
+// API TWITTER
+// const twitter_config = require("./twitter_config");
+// const T = new twit(twitter_config);
 
-const twitter_config = require("./twitter_config");
-const T = new Twit(twitter_config);
+// IFTTT KEY
+// const IFTTT_KEY = process.env.IFTTT_KEY;
+
+// --------------------------------------------------------------
 
 const app = express();
 
-
 app.locals.s = "old";
-
-const middleware = require("./middleware");
-const helpers = require("./helpers");
-
-const IFTTT_KEY = process.env.IFTTT_KEY;
-
-
 
 var visibility_low = 0;
 var visibility_medium = 0.5;
@@ -76,8 +74,8 @@ app.post("/ifttt/v1/test/setup", middleware.serviceKeyCheck, (req, res) => {
     }
   });
 });
-var bool = false;
 
+var bool = false;
 function getViolation(sens, vis){
   return sens * vis;
 }
@@ -219,27 +217,27 @@ async.doWhilst(
   }
 );
 
-  function tweetIt(){
-    var inizioTweet = new Date()
-    var b64content = fs.readFileSync('/tmp/photo.jpg', { encoding: 'base64' })
-    T.post('media/upload', { media_data: b64content }, function (err, data, response){
+function tweetIt(){
+  var inizioTweet = new Date()
+  var b64content = fs.readFileSync('/tmp/photo.jpg', { encoding: 'base64' })
+  T.post('media/upload', { media_data: b64content }, function (err, data, response){
 
-      var mediaIdStr = data.media_id_string
-      var altText ="a test image"
-      var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
+    var mediaIdStr = data.media_id_string
+    var altText ="a test image"
+    var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
 
-      T.post('media/metadata/create', meta_params, function (err, data, response) {
-        if (!err) {
-          var params = { status: '#test', media_ids: [mediaIdStr] }
-          T.post('statuses/update', params, function (err, data, response) {
-            var e = new Date()
-            var end = e.getTime()
-            var fineTweet = new Date() - inizioTweet
-          });
-        }
-      });
+    T.post('media/metadata/create', meta_params, function (err, data, response) {
+      if (!err) {
+        var params = { status: '#test', media_ids: [mediaIdStr] }
+        T.post('statuses/update', params, function (err, data, response) {
+          var e = new Date()
+          var end = e.getTime()
+          var fineTweet = new Date() - inizioTweet
+        });
+      }
     });
-  }
+  });
+}
 
 function change(){
 var i = new Date()
@@ -302,7 +300,7 @@ async.doWhilst(function (callback) {
 
 
 
-//setInterval(change, 10000)
+setInterval(change, 10000)
 
 
 // if you want to execute via app
